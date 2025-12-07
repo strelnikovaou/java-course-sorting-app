@@ -1,0 +1,33 @@
+[ {
+  "number" : "А123БВ",
+  "model" : "Икарус",
+  "mileage" : 50000
+}, {
+  "number" : "В456ГД",
+  "model" : "ЛиАЗ",
+  "mileage" : 75000
+}, {
+  "number" : "М789НО",
+  "model" : "МАЗ",
+  "mileage" : 30000
+}, {
+  "number" : "О987ПР",
+  "model" : "Газель",
+  "mileage" : 15000
+}, {
+  "number" : "О987ПР",
+  "model" : "Газель",
+  "mileage" : 15000
+}, {
+  "number" : "О987ПР",
+  "model" : "Газель",
+  "mileage" : 15000
+}, {
+  "number" : "РТ678СО",
+  "model" : "MERZ",
+  "mileage" : 90000
+}, {
+  "number" : "РТ678СО",
+  "model" : "MERZ",
+  "mileage" : 90000
+} ]
