@@ -1,8 +1,8 @@
 package com.busapp.model;
 
-import com.busapp.validation.BusValidator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -21,9 +21,17 @@ public class Bus implements Comparable<Bus> {
         this.mileage = builder.mileage;
     }
 
-    public String getNumber() { return number; }
-    public String getModel() { return model; }
-    public int getMileage() { return mileage; }
+    public String getNumber() {
+        return number;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public int getMileage() {
+        return mileage;
+    }
 
     public static class Builder {
         private String number;
@@ -61,7 +69,6 @@ public class Bus implements Comparable<Bus> {
         }
 
         public Bus build() {
-            BusValidator.validate(this);
             return new Bus(this);
         }
     }

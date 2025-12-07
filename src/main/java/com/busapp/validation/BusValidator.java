@@ -1,55 +1,38 @@
 package com.busapp.validation;
 
 import com.busapp.model.Bus;
-import java.util.ArrayList;
-import java.util.List;
 
-public final class BusValidator {
+public abstract class BusValidator {
+    private BusValidator next;
 
-    private BusValidator() {}
-
-    //Валидация Builder
-    public static void validate(Bus.Builder builder) {
-        if (builder == null) {
-            throw new IllegalArgumentException("Builder не может быть null");
-        }
-
-        List<String> errors = new ArrayList<>();
-
-        if (builder.getNumber() == null || builder.getNumber().trim().isEmpty()) {
-            errors.add("номер автобуса не может быть пустым");
-        }
-        if (builder.getModel() == null || builder.getModel().trim().isEmpty()) {
-            errors.add("модель автобуса не может быть пустой");
-        }
-        if (builder.getMileage() < 0) {
-            errors.add("пробег не может быть отрицательным (значение: " + builder.getMileage() + ")");
-        }
-
-        if (!errors.isEmpty()) {
-            throw new IllegalArgumentException("Невалидные данные автобуса: " + String.join(", ", errors));
-        }
+    public BusValidator setNext(BusValidator next){
+        this.next = next;
+        return next;
     }
 
-    //Валидация готового объекта Bus
-    public static void validate(Bus bus) {
-        if (bus == null) {
-            throw new IllegalArgumentException("Bus не может быть null");
+    public final ValidationResult validate(Bus bus) {
+        ValidationResult result = validateInternal(bus);
+        if (result.status() != ValidationStatus.SUCCESS) {
+            return result;
         }
-
-        List<String> errors = new ArrayList<>();
-
-        if (bus.getNumber() == null || bus.getNumber().trim().isEmpty()) {
-            errors.add("номер автобуса не может быть пустым");
+        if (next != null) {
+            return next.validate(bus);
         }
-        if (bus.getModel() == null || bus.getModel().trim().isEmpty()) {
-            errors.add("модель автобуса не может быть пустой");
-        }
-        if (bus.getMileage() < 0) {
-            errors.add("пробег не может быть отрицательным (значение: " + bus.getMileage() + ")");
-        }
-        if (!errors.isEmpty()) {
-            throw new IllegalArgumentException("Невалидные данные автобуса: " + String.join(", ", errors));
-        }
+        return successValidationResult();
     }
+
+    public enum ValidationStatus{
+        SUCCESS,
+        FAIL
+    }
+
+    public static ValidationResult errorValidationResult(String message){
+          return new ValidationResult(ValidationStatus.FAIL, message);
+    }
+    public static ValidationResult successValidationResult(){
+        return new ValidationResult(ValidationStatus.SUCCESS, "ok");
+    }
+
+    public record ValidationResult (ValidationStatus status, String message) {}
+    protected abstract ValidationResult validateInternal(Bus bus);
 }

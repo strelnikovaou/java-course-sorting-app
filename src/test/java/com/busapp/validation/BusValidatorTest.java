@@ -5,50 +5,37 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BusValidatorTest {
+
     @Test
-    void shouldPassValidationForCorrectBuilder() {
+    void shouldPassValidationForCorrectBus() {
+        BusValidator validatorChain = new NullBusValidator();
+        validatorChain.setNext(new BussMileageValidator())
+                .setNext(new BussModelValidator())
+                .setNext(new BussNumberValidator());
+
         Bus.Builder builder = new Bus.Builder()
                 .number("А123БВ")
                 .model("МАЗ")
                 .mileage(50000);
 
-        assertDoesNotThrow(() -> BusValidator.validate(builder));
+        assertTrue(() ->
+                validatorChain.validate(builder.build()).status() == BusValidator.ValidationStatus.SUCCESS);
     }
 
     @Test
-    void shouldThrowExceptionForEmptyNumber() {
-        Bus.Builder builder = new Bus.Builder()
-                .number("")
-                .model("МАЗ")
-                .mileage(50000);
+    void shouldFailValidationForIncorrectBus() {
+        BusValidator validatorChain = new NullBusValidator();
+        validatorChain.setNext(new BussMileageValidator())
+                .setNext(new BussModelValidator())
+                .setNext(new BussNumberValidator());
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                () -> BusValidator.validate(builder));
+        Bus invalidBus = new Bus.Builder()
+                .number("РТ678СО")
+                .model("MERZ")
+                .mileage(-90)
+                .build();
 
-        assertTrue(ex.getMessage().contains("номер автобуса"));
-    }
-
-    @Test
-    void shouldThrowExceptionForNegativeMileage() {
-        Bus.Builder builder = new Bus.Builder()
-                .number("А123")
-                .model("МАЗ")
-                .mileage(-100);
-
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                () -> BusValidator.validate(builder));
-
-        assertTrue(ex.getMessage().contains("пробег не может быть отрицательным"));
-    }
-
-    @Test
-    void shouldPassValidationForCorrectBus() {
-        Bus bus = new Bus.Builder().number("А123").model("МАЗ").mileage(100).build();
-        assertDoesNotThrow(() -> BusValidator.validate(bus));
-    }
-
-    @Test
-    void shouldThrowExceptionForNullBus() {
-        assertThrows(IllegalArgumentException.class, () -> BusValidator.validate((Bus) null));
+        assertTrue(() ->
+                validatorChain.validate(invalidBus).status() == BusValidator.ValidationStatus.FAIL);
     }
 }

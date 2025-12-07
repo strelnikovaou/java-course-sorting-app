@@ -1,33 +1,31 @@
 package com.busapp;
 
-import com.busapp.io.JsonFileManager;
+import com.busapp.io.BusRepository;
 import com.busapp.model.Bus;
-
-import java.util.ArrayList;
+import com.busapp.validation.*;
 import java.util.List;
+
+import static com.busapp.validation.BusValidator.ValidationResult;
 
 public class Main {
     public static void main(String[] args) {
-        JsonFileManager fileManager = new JsonFileManager();
+        BusRepository repository = new BusRepository("src/main/resources/buses.json");
+        List<Bus> loaded = repository.getBusesCache();
+        
+        Bus invalidBus = new Bus.Builder()
+                .number("РТ678СО")
+                .model("MERZ")
+                .mileage(-90)
+                .build();
 
-        // Чтение из файла
-        List<Bus> buses = fileManager.readFromFile("src/main/resources/buses.json");
+        ValidationResult result = repository.add(invalidBus);
 
-        System.out.println("Загружено автобусов: " + buses.size());
-
-        for (int i = 0; i < buses.size(); i++) {
-            Bus bus = buses.get(i);
-            System.out.printf("№: %s, Модель: %s, Пробег: %d\n",
-                    bus.getNumber(), bus.getModel(), bus.getMileage());
-        }
-
-
-        List <Bus> buses2 = new ArrayList<>();
-        buses2.addAll(buses);
-        buses2.add(new Bus.Builder().number("РТ678СО").model("MERZ").mileage(90000).build());
-
-        // Запись в файл
-        fileManager.writeToFile("src/main/resources/buses.json", buses2);
+        /**
+         *  repository.loadFromJson(new File("path"))
+         *  repository.remove( bus );
+         *  repository.save();
+         */
 
     }
+
 }
