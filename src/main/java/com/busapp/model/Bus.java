@@ -6,71 +6,41 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.util.Comparator;
 import java.util.Objects;
 
-@JsonDeserialize(builder = Bus.Builder.class)
+@JsonDeserialize(builder = Bus.class)
 public class Bus implements Comparable<Bus> {
     @JsonProperty("number")
-    private final String number;
+    private String number;
     @JsonProperty("model")
-    private final String model;
+    private String model;
     @JsonProperty("mileage")
-    private final int mileage;
-
-    private Bus(Builder builder) {
-        this.number = builder.number;
-        this.model = builder.model;
-        this.mileage = builder.mileage;
-    }
+    private int mileage;
 
     public String getNumber() {
         return number;
     }
+    public String getModel() { return model; }
+    public int getMileage() { return mileage; }
 
-    public String getModel() {
-        return model;
+    @JsonProperty("number")
+    public Bus setNumber(String number){
+        this.number = number;
+        return this;
     }
 
-    public int getMileage() {
-        return mileage;
+    @JsonProperty("model")
+    public Bus setModel(String model){
+        this.model = model;
+        return this;
     }
 
-    public static class Builder {
-        private String number;
-        private String model;
-        private int mileage;
+    @JsonProperty("mileage")
+    public Bus setMileage(int mileage){
+        this.mileage = mileage;
+        return this;
+    }
 
-        @JsonProperty("number")
-        public Builder number(String number) {
-            this.number = number;
-            return this;
-        }
-
-        @JsonProperty("model")
-        public Builder model(String model) {
-            this.model = model;
-            return this;
-        }
-
-        @JsonProperty("mileage")
-        public Builder mileage(int mileage) {
-            this.mileage = mileage;
-            return this;
-        }
-
-        public String getNumber() {
-            return number;
-        }
-
-        public String getModel() {
-            return model;
-        }
-
-        public int getMileage() {
-            return mileage;
-        }
-
-        public Bus build() {
-            return new Bus(this);
-        }
+    public Bus build(){
+        return this;
     }
 
     @Override
