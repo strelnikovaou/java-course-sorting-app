@@ -13,10 +13,10 @@ public class BusValidatorTest {
                 .setNext(new BussModelValidator())
                 .setNext(new BussNumberValidator());
 
-        Bus.Builder builder = new Bus.Builder()
-                .number("А123БВ")
-                .model("МАЗ")
-                .mileage(50000);
+        Bus builder = new Bus()
+                .setNumber("А123БВ")
+                .setModel("МАЗ")
+                .setMileage(50000);
 
         assertTrue(() ->
                 validatorChain.validate(builder.build()).status() == BusValidator.ValidationStatus.SUCCESS);
@@ -29,11 +29,10 @@ public class BusValidatorTest {
                 .setNext(new BussModelValidator())
                 .setNext(new BussNumberValidator());
 
-        Bus invalidBus = new Bus.Builder()
-                .number("РТ678СО")
-                .model("MERZ")
-                .mileage(-90)
-                .build();
+        Bus invalidBus = new Bus()
+                .setNumber("РТ678СО")
+                .setModel("MERZ")
+                .setMileage(-90);
 
         assertTrue(() ->
                 validatorChain.validate(invalidBus).status() == BusValidator.ValidationStatus.FAIL);

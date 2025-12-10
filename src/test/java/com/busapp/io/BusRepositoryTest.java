@@ -57,8 +57,8 @@ public class BusRepositoryTest {
         BusRepository busRepository = new BusRepository( OUTPUT_FILE );
 
         List<Bus> busesToWrite = List.of(
-                new Bus.Builder().number("А123").model("МАЗ").mileage(100).build(),
-                new Bus.Builder().number("Б456").model("КАВЗ").mileage(200).build()
+                new Bus().setNumber("А123").setModel("МАЗ").setMileage(100).build(),
+                new Bus().setNumber("Б456").setModel("КАВЗ").setMileage(200).build()
         );
 
         busRepository.addAll(busesToWrite);
