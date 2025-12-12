@@ -5,42 +5,86 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.Random;
 
-@JsonDeserialize(builder = Bus.class)
+@JsonDeserialize(builder = Bus.Builder.class)
 public class Bus implements Comparable<Bus> {
     @JsonProperty("number")
-    private String number;
+    private final String number;
     @JsonProperty("model")
-    private String model;
+    private final String model;
     @JsonProperty("mileage")
-    private int mileage;
+    private final int mileage;
+
+    private Bus(Builder builder) {
+        this.number = builder.number;
+        this.model = builder.model;
+        this.mileage = builder.mileage;
+    }
 
     public String getNumber() {
         return number;
     }
-    public String getModel() { return model; }
-    public int getMileage() { return mileage; }
 
-    @JsonProperty("number")
-    public Bus setNumber(String number){
-        this.number = number;
-        return this;
+    public String getModel() {
+        return model;
     }
 
-    @JsonProperty("model")
-    public Bus setModel(String model){
-        this.model = model;
-        return this;
+    public int getMileage() {
+        return mileage;
     }
 
-    @JsonProperty("mileage")
-    public Bus setMileage(int mileage){
-        this.mileage = mileage;
-        return this;
-    }
+    public static class Builder {
+        private final static String[] defaultBusModel = {"Урал", "BMW", "BAD"};
+        private final static Random random = new Random();
+        private String number = "";
+        private String model = "";
+        private int mileage = 0;
 
-    public Bus build(){
-        return this;
+        @JsonProperty("number")
+        public Builder number(String number) {
+            this.number = Objects.requireNonNullElseGet(number, () ->
+                    new StringBuilder()
+                    .append((char) (getRandomNumber('А', 'В')))
+                    .append(getRandomNumber(100, 999))
+                    .append((char) (getRandomNumber('Г', 'Е')))
+                    .append((char) (getRandomNumber('К', 'Н')))
+                    .toString());
+            return this;
+        }
+
+        @JsonProperty("model")
+        public Builder model(String model) {
+            this.model = Objects.requireNonNullElseGet(model, () ->
+                    defaultBusModel[random.nextInt(defaultBusModel.length)]);
+            return this;
+        }
+
+        @JsonProperty("mileage")
+        public Builder mileage(int mileage) {
+            this.mileage = mileage < 0 ? getRandomNumber(10, 1_000_000) : mileage;
+            return this;
+        }
+
+        public String getNumber() {
+            return number;
+        }
+
+        public String getModel() {
+            return model;
+        }
+
+        public int getMileage() {
+            return mileage;
+        }
+
+        public Bus build() {
+            return new Bus(this);
+        }
+
+        private int getRandomNumber(int min, int max){
+            return random.nextInt(max - min + 1) + min;
+        }
     }
 
     @Override

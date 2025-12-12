@@ -1,43 +1,33 @@
 package com.busapp;
 
 import com.busapp.io.BusRepository;
-import com.busapp.model.*;
-import com.busapp.model.builder.*;
+import com.busapp.model.Bus;
+import com.busapp.model.BusList;
+import com.busapp.validation.*;
+import java.util.List;
 
-import static java.lang.System.*;
 import static com.busapp.validation.BusValidator.ValidationResult;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-
-        // fill from file buses.json
         BusRepository repository = new BusRepository("src/main/resources/buses.json");
-        BusList busList = new BusList(repository.getBusesCache());
+        List<Bus> loaded = repository.getBusesCache();
 
-        // fill from random data
-        BusCreator busCreator = new BusCreator(new RandomBusBuilder());
-        busList.add(busCreator.bus(null));
+        BusList busList = new BusList(loaded);
+        busList.add(new Bus.Builder().number(null).model(null).mileage(-1).build());
+        busList.add(new Bus.Builder().number(null).model(null).mileage(-1).build());
 
-        // fill from string (console user input)
-        busCreator = new BusCreator(new StringBusBuilder());
-        busList.add(busCreator.bus("А123БВ Икарус 50000"));
+        busList.add(new Bus.Builder().number("A123ВА").model("ПАЗ").mileage(0).build());
+        busList.add(new Bus.Builder().number("А123БВ").model("Икарус").mileage(50000).build());
 
-        // multithreaded search
-        busList.countPrint(busCreator.bus("А123БВ Икарус 50000"));
-
-        // sort by all fields
-        busList.sort();
-
-        // sort by Mileage field
-        busList.sortByEvenValuesOfMileage();
-
-        // save (add) buses to file busOutputFile.json
-        busList.saveToFile();
-
-        Bus invalidBus = new Bus()
-                .setNumber("РТ678СО")
-                .setModel("MERZ")
-                .setMileage(-90);
+        busList.forEach(System.out::println);
+        busList.countPrint(new Bus.Builder().number("А123БВ").model("Икарус").mileage(50000).build());
+        
+        Bus invalidBus = new Bus.Builder()
+                .number("РТ678СО")
+                .model("MERZ")
+                .mileage(-90)
+                .build();
 
         ValidationResult result = repository.add(invalidBus);
 
