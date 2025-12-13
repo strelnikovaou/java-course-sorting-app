@@ -1,56 +1,69 @@
 package com.busapp.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 import java.util.Comparator;
 import java.util.Objects;
 
-@JsonDeserialize(builder = Bus.class)
+@JsonDeserialize(builder = Bus.Builder.class)
 public class Bus implements Comparable<Bus> {
-    @JsonProperty("number")
-    private String number;
-    @JsonProperty("model")
-    private String model;
-    @JsonProperty("mileage")
-    private int mileage;
+    private final String number;
+    private final String model;
+    private final int mileage;
+
+    private static final Comparator<Bus> NATURAL_ORDER_COMPARATOR =
+            Comparator.comparing(Bus::getNumber, String.CASE_INSENSITIVE_ORDER)
+                    .thenComparing(Bus::getModel, String.CASE_INSENSITIVE_ORDER)
+                    .thenComparingInt(Bus::getMileage);
+
+    private Bus(Builder builder) {
+        this.number = builder.number;
+        this.model = builder.model;
+        this.mileage = builder.mileage;
+    }
 
     public String getNumber() {
         return number;
     }
-    public String getModel() { return model; }
-    public int getMileage() { return mileage; }
 
-    @JsonProperty("number")
-    public Bus setNumber(String number){
-        this.number = number;
-        return this;
+    public String getModel() {
+        return model;
     }
 
-    @JsonProperty("model")
-    public Bus setModel(String model){
-        this.model = model;
-        return this;
+    public int getMileage() {
+        return mileage;
     }
 
-    @JsonProperty("mileage")
-    public Bus setMileage(int mileage){
-        this.mileage = mileage;
-        return this;
-    }
+    @JsonPOJOBuilder(buildMethodName = "build", withPrefix = "")
+    public static class Builder {
+        private String number;
+        private String model;
+        private int mileage;
 
-    public Bus build(){
-        return this;
+        public Builder number(String number) {
+            this.number = number;
+            return this;
+        }
+
+        public Builder model(String model) {
+            this.model = model;
+            return this;
+        }
+
+        public Builder mileage(int mileage) {
+            this.mileage = mileage;
+            return this;
+        }
+
+        public Bus build() {
+            return new Bus(this);
+        }
     }
 
     @Override
     public int compareTo(Bus other) {
-        if (other == null) throw new NullPointerException("Сравнение с null невозможно");
-
-        return Comparator.comparing(Bus::getNumber)
-                .thenComparing(Bus::getModel)
-                .thenComparingInt(Bus::getMileage)
-                .compare(this, other);
+        return NATURAL_ORDER_COMPARATOR.compare(this, other);
     }
 
     @Override

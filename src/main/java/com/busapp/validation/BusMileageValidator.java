@@ -2,7 +2,7 @@ package com.busapp.validation;
 
 import com.busapp.model.Bus;
 
-public class BussMileageValidator extends BusValidator{
+public class BusMileageValidator extends BusValidator{
     @Override
     protected ValidationResult validateInternal(Bus bus) {
         if(bus.getMileage() < 0){
