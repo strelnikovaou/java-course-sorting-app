@@ -22,4 +22,28 @@
   "number" : "А209ОУ",
   "model" : "Ikarus",
   "mileage" : 2343
+}, {
+  "number" : "Е416СВ",
+  "model" : "LiAZ",
+  "mileage" : 218961
+}, {
+  "number" : "В454ЕВ",
+  "model" : "KAVZ",
+  "mileage" : 294494
+}, {
+  "number" : "Т708РР",
+  "model" : "KAVZ",
+  "mileage" : 245427
+}, {
+  "number" : "Н693АС",
+  "model" : "Scania",
+  "mileage" : 67468
+}, {
+  "number" : "А805ВМ",
+  "model" : "LiAZ",
+  "mileage" : 264115
+}, {
+  "number" : "А209ОУ",
+  "model" : "Ikarus",
+  "mileage" : 2343
 } ]
