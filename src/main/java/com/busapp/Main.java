@@ -45,7 +45,7 @@ public class Main {
         boolean exit = false;
         while (!exit) {
             showMenu();
-            System.out.println("Введите число от 0 до 9 : ");
+            System.out.println("Введите число от 0 до 10 : ");
             String line = SCANNER.nextLine();
             if (!isInteger(line)) {
                 continue;
@@ -65,6 +65,7 @@ public class Main {
                 case 10 -> clearCollection();
                 case 0 -> {
                     exit = true;
+                    SCANNER.close();
                     System.out.println("Выход. До свидания!");
                 }
                 default -> System.out.println("Неверный выбор, попробуйте снова.");
