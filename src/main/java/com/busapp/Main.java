@@ -77,10 +77,10 @@ public class Main {
 
     private static void save(boolean append) {
         if(!repository.hasFile()){
-            System.out.println("Введите имы файла:");
+            System.out.println("Введите имя файла:");
             String path = SCANNER.nextLine();
             while (!isValidPath(path)){
-                logger.error("Не корректный путь до файла.Введите корректный.");
+                logger.error("Некорректный путь до файла. Введите корректный.");
                 path = SCANNER.nextLine();
             }
             repository.setBusesFile(new File(path));
@@ -180,7 +180,7 @@ public class Main {
             System.out.println("Пробег: ");
             String tmp = SCANNER.nextLine();
             if(tmp.isEmpty()||!isInteger(tmp)){
-                System.err.printf("Не верный пробег - %s\n",tmp);
+                System.err.printf("Неверный пробег - %s\n",tmp);
                 continue;
             }
 
@@ -217,7 +217,7 @@ public class Main {
         System.out.println("Ваш выбор: ");
         String tmp = SCANNER.nextLine();
         if(tmp.isEmpty()||!isInteger(tmp)){
-            System.err.printf("Не верный выбор %s\n",tmp);
+            System.err.printf("Неверный выбор %s\n",tmp);
             return;
         }
 
