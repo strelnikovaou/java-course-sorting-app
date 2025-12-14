@@ -2,19 +2,20 @@ package com.busapp.utils;
 
 
 /**
- * Класс с константами ANSI цветовых кодов.
+ * Утилитный класс для работы с ANSI цветовыми кодами в консоли.
+ * Содержит константы основных цветов и метод для окрашивания текста.
+ * <p>
+ * Класс не предназначен для создания экземпляров.
  */
 public final class AnsiColors {
 
-    // Приватный конструктор - запрещаем создание экземпляров
     private AnsiColors() {
         throw new UnsupportedOperationException("Utility class");
     }
 
-    // Сброс
+    /** Код сброса всех цветовых настроек. */
     public static final String RESET = "\u001B[0m";
 
-    // Основные цвета
     public static final String BLACK = "\u001B[30m";
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
@@ -24,7 +25,13 @@ public final class AnsiColors {
     public static final String CYAN = "\u001B[36m";
     public static final String WHITE = "\u001B[37m";
 
-    // Утилитный метод для окрашивания текста
+    /**
+     * Окрашивает текст указанным ANSI цветом с автоматическим сбросом.
+     *
+     * @param text текст для окрашивания
+     * @param color ANSI код цвета (используйте константы класса)
+     * @return текст с цветовым кодом и сбросом цвета в конце
+     */
     public static String colorize(String text, String color) {
         return color + text + RESET;
     }

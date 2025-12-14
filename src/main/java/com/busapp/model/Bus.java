@@ -23,14 +23,29 @@ public class Bus implements Comparable<Bus> {
         this.mileage = builder.mileage;
     }
 
+    /**
+     * Возвращает номер автобуса.
+     *
+     * @return номер автобуса в формате А123ВЕ
+     */
     public String getNumber() {
         return number;
     }
 
+    /**
+     * Возвращает модель автобуса.
+     *
+     * @return модель автобуса
+     */
     public String getModel() {
         return model;
     }
 
+    /**
+     * Возвращает пробег автобуса.
+     *
+     * @return пробег в километрах
+     */
     public int getMileage() {
         return mileage;
     }
@@ -41,21 +56,44 @@ public class Bus implements Comparable<Bus> {
         private String model;
         private int mileage;
 
+        /**
+         * Устанавливает номер автобуса.
+         *
+         * @param number номер автобуса в формате А123ВЕ
+         * @return текущий экземпляр Builder для цепочки вызовов
+         */
         public Builder number(String number) {
             this.number = number;
             return this;
         }
 
+        /**
+         * Устанавливает модель автобуса.
+         *
+         * @param model модель автобуса
+         * @return текущий экземпляр Builder для цепочки вызовов
+         */
         public Builder model(String model) {
             this.model = model;
             return this;
         }
 
+        /**
+         * Устанавливает пробег автобуса.
+         *
+         * @param mileage пробег в километрах
+         * @return текущий экземпляр Builder для цепочки вызовов
+         */
         public Builder mileage(int mileage) {
             this.mileage = mileage;
             return this;
         }
 
+        /**
+         * Создает экземпляр Bus с заданными параметрами.
+         *
+         * @return новый экземпляр автобуса
+         */
         public Bus build() {
             return new Bus(this);
         }

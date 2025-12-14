@@ -9,6 +9,11 @@ public class BusGenerator {
     private static final String LETTERS = "АВЕКМНОРСТУХ";
     private static final String DIGITS = "0123456789";
 
+    /**
+     * Генерирует случайный автобус с валидными данными.
+     *
+     * @return новый автобус со случайными номером, моделью и пробегом
+     */
     public static Bus generateRandomBus() {
         return new Bus.Builder()
                 .number(generateNumber())

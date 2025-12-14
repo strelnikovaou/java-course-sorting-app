@@ -35,6 +35,11 @@ public class Main {
         sortStrategies.put(6, new EvenOddSortStrategy(new BusNumberSort(), Bus::getMileage));
     }
 
+    /**
+     * Точка входа в приложение для управления коллекцией автобусов.
+     *
+     * @param args аргументы командной строки (не используются)
+     */
     public static void main(String[] args) {
         System.out.println("~~~ BUS SORTING APP | МЕНЮ ~~~");
         boolean exit = false;
@@ -92,6 +97,12 @@ public class Main {
     }
 
 
+    /**
+     * Проверяет, можно ли преобразовать строку в целое число.
+     *
+     * @param str строка для проверки
+     * @return true если строка представляет целое число
+     */
     public static boolean isInteger(String str) {
         try {
             Integer.parseInt(str);
