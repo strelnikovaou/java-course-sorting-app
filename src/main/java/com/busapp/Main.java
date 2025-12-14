@@ -21,12 +21,12 @@ import static com.busapp.utils.AnsiColors.*;
 
 
 public class Main {
-    private static final Logger logger = LoggerFactory.getLogger(Main.class);
-    private static final BusRepository repository = new BusRepository();
-    private static final Map<Integer, SortStrategy> sortStrategies = new HashMap<>();
-    private static final Scanner SCANNER = new Scanner(System.in);
+    private  Logger logger = LoggerFactory.getLogger(Main.class);
+    private  BusRepository repository = new BusRepository();
+    private  Map<Integer, SortStrategy> sortStrategies = new HashMap<>();
+    private  Scanner sysInScanner = new Scanner(System.in);
 
-    static {
+    public Main(){
         sortStrategies.put(1, new BusNumberSort());
         sortStrategies.put(2, new BusModelSort());
         sortStrategies.put(3, new BusMileageSort());
@@ -34,14 +34,23 @@ public class Main {
         sortStrategies.put(5, new EvenOddSortStrategy(new BusMileageSort(), Bus::getMileage));
         sortStrategies.put(6, new EvenOddSortStrategy(new BusNumberSort(), Bus::getMileage));
     }
-
+    /**
+     * Точка входа в приложение для управления коллекцией автобусов.
+     *
+     * @param args аргументы командной строки (не используются)
+     */
     public static void main(String[] args) {
+      Main main = new Main();
+      main.runApplication();
+    }
+
+    void runApplication() {
         System.out.println("~~~ BUS SORTING APP | МЕНЮ ~~~");
         boolean exit = false;
         while (!exit) {
             showMenu();
-            System.out.println("Введите число от 0 до 9 : ");
-            String line = SCANNER.nextLine();
+            System.out.println("Введите число от 0 до 10 : ");
+            String line = sysInScanner.nextLine();
             if (!isInteger(line)) {
                 continue;
             }
@@ -60,13 +69,13 @@ public class Main {
                 case 10 -> clearCollection();
                 case 0 -> {
                     exit = true;
+                    sysInScanner.close();
                     System.out.println("Выход. До свидания!");
                 }
                 default -> System.out.println("Неверный выбор, попробуйте снова.");
             }
         }
     }
-
     private static boolean isValidPath(String path) {
         try {
             Paths.get(path);
@@ -76,13 +85,13 @@ public class Main {
         return true;
     }
 
-    private static void save(boolean append) {
+    private void save(boolean append) {
         if (!repository.hasFile()) {
             System.out.println("Введите имя файла: (Пример: src/main/resources/buses.json)");
-            String path = SCANNER.nextLine();
+            String path = sysInScanner.nextLine();
             while (!isValidPath(path)) {
                 logger.error("Некорректный путь до файла. Введите корректный.");
-                path = SCANNER.nextLine();
+                path = sysInScanner.nextLine();
             }
             repository.setBusesFile(new File(path));
         }
@@ -92,6 +101,12 @@ public class Main {
     }
 
 
+    /**
+     * Проверяет, можно ли преобразовать строку в целое число.
+     *
+     * @param str строка для проверки
+     * @return true если строка представляет целое число
+     */
     public static boolean isInteger(String str) {
         try {
             Integer.parseInt(str);
@@ -125,9 +140,9 @@ public class Main {
         System.out.print(YELLOW + "Ваш выбор → " + RESET);
     }
 
-    private static void loadFromFile() {
+    private void loadFromFile() {
         System.out.println("Введите путь к файлу. (Пример: src/main/resources/buses.json) :");
-        String line = SCANNER.nextLine();
+        String line = sysInScanner.nextLine();
         if (line.isBlank()) {
             logger.warn("Путь к файлу не может быть пустым");
             return;
@@ -138,17 +153,18 @@ public class Main {
     }
 
 
-    private static void generateRandom() {
+    private void generateRandom() {
         System.out.println("Сколько автобусов сгенерировать? :");
-        String line = SCANNER.nextLine();
+        String line = sysInScanner.nextLine();
         if (line.isBlank() || !isInteger(line)) {
             return;
         }
         int count = Integer.parseInt(line);
 
-        List<Bus> generated = IntStream.range(0, count)
-                .mapToObj(i -> BusGenerator.generateRandomBus())
-                .collect(Collectors.toList());
+        BusList generated = BusList.fromStream(
+                IntStream.range(0, count)
+                        .mapToObj(i -> BusGenerator.generateRandomBus())
+        );
 
         List<BusValidator.ValidationResult> results = repository.addAll(generated);
         long successCount = results.stream()
@@ -158,21 +174,21 @@ public class Main {
         logger.info("Сгенерировано {} автобусов, добавлено {}", count, successCount);
     }
 
-    private static void inputManual() {
+    private void inputManual() {
         logger.info("Ввод данных автобуса (пустой номер для завершения):");
 
         while (true) {
             System.out.println("Номер (формат А123ВЕ) РАЗРЕШЁННЫЕ БУКВЫ: А, В, Е, К, М, Н, О, Р, С, Т, У, Х : ");
-            String number = SCANNER.nextLine();
+            String number = sysInScanner.nextLine();
 
             if (number.isEmpty())
                 break;
 
             System.out.println("Модель: ");
-            String model = SCANNER.nextLine();
+            String model = sysInScanner.nextLine();
 
             System.out.println("Пробег: ");
-            String tmp = SCANNER.nextLine();
+            String tmp = sysInScanner.nextLine();
             if (tmp.isEmpty() || !isInteger(tmp)) {
                 System.err.printf("Неверный пробег - %s\n", tmp);
                 continue;
@@ -194,7 +210,7 @@ public class Main {
         }
     }
 
-    private static void sortCollection() {
+    private void sortCollection() {
         if (repository.isEmpty()) {
             logger.warn("Коллекция пуста");
             return;
@@ -209,7 +225,7 @@ public class Main {
         System.out.println("6. По номеру (только четные позиции)");
 
         System.out.println("Ваш выбор: ");
-        String tmp = SCANNER.nextLine();
+        String tmp = sysInScanner.nextLine();
         if (tmp.isEmpty() || !isInteger(tmp)) {
             System.err.printf("Неверный выбор %s\n", tmp);
             return;
@@ -229,10 +245,10 @@ public class Main {
     }
 
 
-    private static void searchBus() {
+    private void searchBus() {
 
         System.out.println("Введите номер или модель: ");
-        String query = SCANNER.nextLine().trim().toLowerCase();
+        String query = sysInScanner.nextLine().trim().toLowerCase();
         if (query.isEmpty()) {
             logger.warn("Запрос не может быть пустым");
             return;
@@ -250,10 +266,10 @@ public class Main {
         }
     }
 
-    private static void countOccurrences() {
+    private void countOccurrences() {
         System.out.println("Введите пробег для подсчета: от  0 до 1_000_000");
 
-        String tmp = SCANNER.nextLine();
+        String tmp = sysInScanner.nextLine();
         if (!isInteger(tmp)) {
             System.err.printf("Не верный пробег - %s\n", tmp);
             return;
@@ -274,12 +290,12 @@ public class Main {
         }).join();
     }
 
-    private static void clearCollection() {
+    private void clearCollection() {
         repository.clear();
         logger.info("Коллекция очищена");
     }
 
-    private static void showAllBuses() {
+    private void showAllBuses() {
         if (repository.isEmpty()) {
             logger.info("Коллекция пуста");
             return;

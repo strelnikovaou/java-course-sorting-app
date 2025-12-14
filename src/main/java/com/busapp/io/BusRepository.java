@@ -22,12 +22,19 @@ public class BusRepository {
     private File busesFile = null;
     private boolean loaded = false;
 
+    /**
+     * Создает новый репозиторий автобусов с инициализацией цепочки валидаторов.
+     */
     public BusRepository() {
         this(null);
     }
 
+    /**
+     * Создает новый репозиторий автобусов с автоматической загрузкой из файла.
+     *
+     * @param path путь к файлу для загрузки данных
+     */
     public BusRepository(String path) {
-
         validatorChain.setNext(new BusMileageValidator())
                 .setNext(new BusModelValidator())
                 .setNext(new BusNumberValidator());
@@ -38,11 +45,21 @@ public class BusRepository {
 
     }
 
-
+    /**
+     * Устанавливает файл для операций сохранения/загрузки.
+     *
+     * @param file файл для работы с данными
+     */
     public void setBusesFile(File file) {
         this.busesFile = file;
     }
 
+    /**
+     * Устанавливает файл для операций сохранения/загрузки с опцией автозагрузки.
+     *
+     * @param file     файл для работы с данными
+     * @param autoLoad если true, данные будут загружены автоматически
+     */
     public void setBusesFile(File file, boolean autoLoad) {
         this.busesFile = file;
         if (autoLoad && this.busesFile != null && this.busesFile.exists()) {
@@ -50,24 +67,47 @@ public class BusRepository {
         }
     }
 
+    /**
+     * Проверяет, были ли загружены данные из файла.
+     *
+     * @return true если данные успешно загружены
+     */
     public boolean isLoaded() {
         return this.loaded;
     }
 
+    /**
+     * Проверяет, установлен ли файл для операций.
+     *
+     * @return true если файл установлен
+     */
     public boolean hasFile() {
         return this.busesFile != null;
     }
 
+    /**
+     * Возвращает копию текущего кеша автобусов.
+     *
+     * @return новый список автобусов, содержащий копию данных
+     */
     public BusList getBusesCache() {
         BusList result = new BusList();
         result.addAll(busesCache);
         return result;
     }
 
+    /**
+     * Загружает автобусы из ранее установленного JSON файла.
+     */
     public void loadFromJson() {
         loadFromJson(busesFile);
     }
 
+    /**
+     * Загружает автобусы из указанного JSON файла с валидацией.
+     *
+     * @param file JSON файл для загрузки
+     */
     public void loadFromJson(File file) {
         if (file == null || !file.exists() || !file.isFile()) {
             logger.error("Wrong file");
@@ -93,7 +133,12 @@ public class BusRepository {
         }
     }
 
-
+    /**
+     * Добавляет автобус в репозиторий после валидации.
+     *
+     * @param bus автобус для добавления
+     * @return результат валидации
+     */
     public BusValidator.ValidationResult add(Bus bus) {
         BusValidator.ValidationResult validate = validatorChain.validate(bus);
         if (validate.status() == BusValidator.ValidationStatus.FAIL) {
@@ -104,6 +149,12 @@ public class BusRepository {
         return validate;
     }
 
+    /**
+     * Добавляет список автобусов в репозиторий с валидацией каждого.
+     *
+     * @param buses список автобусов для добавления
+     * @return список результатов валидации для каждого автобуса
+     */
     public List<BusValidator.ValidationResult> addAll(List<Bus> buses) {
         List<BusValidator.ValidationResult> results = new ArrayList<>();
         for (Bus bus : buses) {
@@ -112,7 +163,11 @@ public class BusRepository {
         return results;
     }
 
-
+    /**
+     * Сохраняет текущую коллекцию в установленный JSON файл.
+     *
+     * @return true если сохранение успешно
+     */
     public boolean saveJson() {
         return saveToFile(busesFile, false);
     }
@@ -182,15 +237,27 @@ public class BusRepository {
         }
     }
 
-
+    /**
+     * Очищает кеш автобусов.
+     */
     public void clear() {
         busesCache.clear();
     }
 
+    /**
+     * Проверяет, пуст ли кеш автобусов.
+     *
+     * @return true если коллекция пуста
+     */
     public boolean isEmpty() {
         return busesCache.isEmpty();
     }
 
+    /**
+     * Возвращает количество автобусов в кеше.
+     *
+     * @return размер коллекции
+     */
     public int size() {
         return busesCache.size();
     }
