@@ -42,10 +42,10 @@ public class Main {
             showMenu();
             System.out.println("Введите число от 0 до 9 : ");
             String line = SCANNER.nextLine();
-            if(!isInteger(line)){
+            if (!isInteger(line)) {
                 continue;
             }
-            int choice =  Integer.parseInt(line);
+            int choice = Integer.parseInt(line);
 
             switch (choice) {
                 case 1 -> loadFromFile();
@@ -57,6 +57,7 @@ public class Main {
                 case 7 -> searchBus();
                 case 8 -> countOccurrences();
                 case 9 -> showAllBuses();
+                case 10 -> clearCollection();
                 case 0 -> {
                     exit = true;
                     System.out.println("Выход. До свидания!");
@@ -76,24 +77,17 @@ public class Main {
     }
 
     private static void save(boolean append) {
-        if(!repository.hasFile()){
-            System.out.println("Введите имя файла:");
+        if (!repository.hasFile()) {
+            System.out.println("Введите имя файла: (Пример: src/main/resources/buses.json)");
             String path = SCANNER.nextLine();
-            while (!isValidPath(path)){
+            while (!isValidPath(path)) {
                 logger.error("Некорректный путь до файла. Введите корректный.");
                 path = SCANNER.nextLine();
             }
             repository.setBusesFile(new File(path));
         }
 
-        if (append) {
-            if(!repository.isLoaded()){
-                BusList busesCache = repository.getBusesCache();
-                repository.loadFromJson(); //  clear cache and load from file
-                repository.addAll(busesCache);
-            }
-        }
-        boolean success = repository.saveJson();
+        boolean success = repository.save(append);
         logger.info(success ? "✓ Сохранение успешно" : "✗ Ошибка сохранения");
     }
 
@@ -112,6 +106,7 @@ public class Main {
                 "╔══════════════════════════════════════════════╗\n" +
                 "║ Г Л А В Н О Е М Е Н Ю ║\n" +
                 "╠══════════════════════════════════════════════╣" + RESET);
+        System.out.println(GREEN + " 0 " + RESET + " —   Выход");
         System.out.println(GREEN + " 1 " + RESET + " —   Загрузить из файла (JSON)");
         System.out.println(GREEN + " 2 " + RESET + " —   Создать случайные автобусы");
         System.out.println(GREEN + " 3 " + RESET + " —   Добавить автобусы вручную");
@@ -121,7 +116,7 @@ public class Main {
         System.out.println(GREEN + " 7 " + RESET + " —   Поиск по номеру/модели");
         System.out.println(GREEN + " 8 " + RESET + " —   Подсчет вхождений (многопоточно)");
         System.out.println(GREEN + " 9 " + RESET + " —   Показать все автобусы");
-        System.out.println(GREEN + " 0 " + RESET + " —   Выход");
+        System.out.println(GREEN + "10 " + RESET + " —   Очистить кэш коллекции");
 
         System.out.println(CYAN +
                 "╚══════════════════════════════════════════════╝" +
@@ -146,9 +141,9 @@ public class Main {
     private static void generateRandom() {
         System.out.println("Сколько автобусов сгенерировать? :");
         String line = SCANNER.nextLine();
-         if(line.isBlank() || !isInteger(line)) {
-             return;
-         }
+        if (line.isBlank() || !isInteger(line)) {
+            return;
+        }
         int count = Integer.parseInt(line);
 
         List<Bus> generated = IntStream.range(0, count)
@@ -166,8 +161,7 @@ public class Main {
     private static void inputManual() {
         logger.info("Ввод данных автобуса (пустой номер для завершения):");
 
-        while (true)
-        {
+        while (true) {
             System.out.println("Номер (формат А123ВЕ) РАЗРЕШЁННЫЕ БУКВЫ: А, В, Е, К, М, Н, О, Р, С, Т, У, Х : ");
             String number = SCANNER.nextLine();
 
@@ -179,8 +173,8 @@ public class Main {
 
             System.out.println("Пробег: ");
             String tmp = SCANNER.nextLine();
-            if(tmp.isEmpty()||!isInteger(tmp)){
-                System.err.printf("Неверный пробег - %s\n",tmp);
+            if (tmp.isEmpty() || !isInteger(tmp)) {
+                System.err.printf("Неверный пробег - %s\n", tmp);
                 continue;
             }
 
@@ -201,7 +195,7 @@ public class Main {
     }
 
     private static void sortCollection() {
-        if (repository.isEmpty()){
+        if (repository.isEmpty()) {
             logger.warn("Коллекция пуста");
             return;
         }
@@ -216,8 +210,8 @@ public class Main {
 
         System.out.println("Ваш выбор: ");
         String tmp = SCANNER.nextLine();
-        if(tmp.isEmpty()||!isInteger(tmp)){
-            System.err.printf("Неверный выбор %s\n",tmp);
+        if (tmp.isEmpty() || !isInteger(tmp)) {
+            System.err.printf("Неверный выбор %s\n", tmp);
             return;
         }
 
@@ -260,8 +254,8 @@ public class Main {
         System.out.println("Введите пробег для подсчета: от  0 до 1_000_000");
 
         String tmp = SCANNER.nextLine();
-        if(!isInteger(tmp)){
-            System.err.printf("Не верный пробег - %s\n",tmp);
+        if (!isInteger(tmp)) {
+            System.err.printf("Не верный пробег - %s\n", tmp);
             return;
         }
 
@@ -280,7 +274,10 @@ public class Main {
         }).join();
     }
 
-
+    private static void clearCollection() {
+        repository.clear();
+        logger.info("Коллекция очищена");
+    }
 
     private static void showAllBuses() {
         if (repository.isEmpty()) {

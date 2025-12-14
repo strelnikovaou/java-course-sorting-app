@@ -1,6 +1,7 @@
 package com.busapp.io;
 
 import com.busapp.model.Bus;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class BusRepository {
     private BusValidator validatorChain = new NullBusValidator();
     private BusList busesCache = new BusList();
     private File busesFile = null;
-    private  boolean loaded = false;
+    private boolean loaded = false;
 
     public BusRepository() {
         this(null);
@@ -32,29 +33,41 @@ public class BusRepository {
                 .setNext(new BusNumberValidator());
 
         if (path != null && !path.isEmpty()) {
-            setBusesFile(new File(path));
+            setBusesFile(new File(path), true);
         }
 
     }
 
+
     public void setBusesFile(File file) {
         this.busesFile = file;
-        if (this.busesFile != null && this.busesFile.exists()) {
+    }
+
+    public void setBusesFile(File file, boolean autoLoad) {
+        this.busesFile = file;
+        if (autoLoad && this.busesFile != null && this.busesFile.exists()) {
             loadFromJson(busesFile);
         }
     }
 
-    public boolean isLoaded() {return this.loaded;}
-    public boolean hasFile() {return this.busesFile != null;}
+    public boolean isLoaded() {
+        return this.loaded;
+    }
+
+    public boolean hasFile() {
+        return this.busesFile != null;
+    }
 
     public BusList getBusesCache() {
         BusList result = new BusList();
         result.addAll(busesCache);
         return result;
     }
-    public void loadFromJson(){
+
+    public void loadFromJson() {
         loadFromJson(busesFile);
     }
+
     public void loadFromJson(File file) {
         if (file == null || !file.exists() || !file.isFile()) {
             logger.error("Wrong file");
@@ -72,7 +85,6 @@ public class BusRepository {
                     logger.error("Ошибка валидации: {}", vr.message());
                 }
             }
-
             this.busesFile = file;
             this.loaded = true;
             logger.info("Успешно загружено {} автобусов из {}", busesCache.size(), file.getAbsolutePath());
@@ -105,33 +117,48 @@ public class BusRepository {
         return saveToFile(busesFile, false);
     }
 
-    public boolean appendToJson(List<Bus> additionalBuses) {
+    /**
+     * Сохраняет данные в файл с поддержкой режима добавления
+     *
+     * @param append true - добавить к существующим данным в файле, false - перезаписать файл
+     * @return true если сохранение успешно
+     */
+    public boolean save(boolean append) {
         if (busesFile == null) {
             logger.error("Файл не задан");
             return false;
         }
 
-        List<Bus> existing = new ArrayList<>();
+        if (append) {
+            return appendToFile();
+        } else {
+            return saveToFile(busesFile, busesCache, false);
+        }
+    }
+
+    /**
+     * Добавляет текущий кеш к существующим данным в файле
+     *
+     * @return true если сохранение успешно
+     */
+    private boolean appendToFile() {
+        List<Bus> allBuses = new ArrayList<>();
+
         if (busesFile.exists()) {
             try {
-                Bus[] loaded = objectMapper.readValue(busesFile, Bus[].class);
-                Collections.addAll(existing, loaded);
-
+                Bus[] existing = objectMapper.readValue(busesFile, Bus[].class);
+                Collections.addAll(allBuses, existing);
+                logger.info("Загружено {} существующих автобусов из файла", existing.length);
             } catch (IOException e) {
                 logger.error("Ошибка чтения файла для добавления: {}", e.getMessage());
                 return false;
             }
         }
 
-        List<Bus> toAdd = new ArrayList<>();
-        for (Bus bus : additionalBuses) {
-            if (validatorChain.validate(bus).status() == BusValidator.ValidationStatus.SUCCESS) {
-                toAdd.add(bus);
-            }
-        }
+        allBuses.addAll(busesCache);
+        logger.info("Добавлено {} новых автобусов из кеша", busesCache.size());
 
-        existing.addAll(toAdd);
-        return saveToFile(busesFile, existing, false);
+        return saveToFile(busesFile, allBuses, false);
     }
 
     private boolean saveToFile(File file, boolean append) {

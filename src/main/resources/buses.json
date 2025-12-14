@@ -1,37 +1,25 @@
 [ {
-  "number" : "М789НО",
-  "model" : "МАЗ",
-  "mileage" : 30000
-}, {
-  "number" : "В740УХ",
-  "model" : "KAVZ",
-  "mileage" : 487576
-}, {
-  "number" : "Т833ХК",
-  "model" : "Scania",
-  "mileage" : 90568
-}, {
-  "number" : "А973КЕ",
-  "model" : "KAVZ",
-  "mileage" : 435381
-}, {
-  "number" : "Р983ЕХ",
-  "model" : "PAZ",
-  "mileage" : 85206
-}, {
-  "number" : "К885ХХ",
-  "model" : "Ikarus",
-  "mileage" : 215086
-}, {
-  "number" : "Т211УР",
-  "model" : "KAVZ",
-  "mileage" : 461864
-}, {
-  "number" : "Х073ЕК",
-  "model" : "Ikarus",
-  "mileage" : 354842
-}, {
-  "number" : "Н462КЕ",
+  "number" : "Е416СВ",
   "model" : "LiAZ",
-  "mileage" : 71428
+  "mileage" : 218961
+}, {
+  "number" : "В454ЕВ",
+  "model" : "KAVZ",
+  "mileage" : 294494
+}, {
+  "number" : "Т708РР",
+  "model" : "KAVZ",
+  "mileage" : 245427
+}, {
+  "number" : "Н693АС",
+  "model" : "Scania",
+  "mileage" : 67468
+}, {
+  "number" : "А805ВМ",
+  "model" : "LiAZ",
+  "mileage" : 264115
+}, {
+  "number" : "А209ОУ",
+  "model" : "Ikarus",
+  "mileage" : 2343
 } ]
