@@ -218,6 +218,7 @@ public class Main {
         String tmp = SCANNER.nextLine();
         if(tmp.isEmpty()||!isInteger(tmp)){
             System.err.printf("Не верный выбор %s\n",tmp);
+            return;
         }
 
         int choice = Integer.parseInt(tmp);
@@ -257,8 +258,14 @@ public class Main {
 
     private static void countOccurrences() {
         System.out.println("Введите пробег для подсчета: от  0 до 1_000_000");
-        int target = Integer.parseInt(SCANNER.nextLine().trim());
 
+        String tmp = SCANNER.nextLine();
+        if(!isInteger(tmp)){
+            System.err.printf("Не верный пробег - %s\n",tmp);
+            return;
+        }
+
+        int target = Integer.parseInt(tmp);
         logger.info("Запуск многопоточного подсчета...");
 
         CompletableFuture<Long> future = CompletableFuture.supplyAsync(() ->
