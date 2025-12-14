@@ -158,9 +158,10 @@ public class Main {
         }
         int count = Integer.parseInt(line);
 
-        List<Bus> generated = IntStream.range(0, count)
-                .mapToObj(i -> BusGenerator.generateRandomBus())
-                .collect(Collectors.toList());
+        BusList generated = BusList.fromStream(
+                IntStream.range(0, count)
+                        .mapToObj(i -> BusGenerator.generateRandomBus())
+        );
 
         List<BusValidator.ValidationResult> results = repository.addAll(generated);
         long successCount = results.stream()
