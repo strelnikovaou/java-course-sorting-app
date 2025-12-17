@@ -241,6 +241,8 @@ public class Main {
 
         BusList data = repository.getBusesCache();
         strategy.sort(data);
+        repository.clear();
+        repository.addAll(data);
         logger.info("Коллекция отсортирована: {}", strategy.getName());
     }
 
