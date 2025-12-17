@@ -32,7 +32,6 @@ public class Main {
         sortStrategies.put(3, new BusMileageSort());
         sortStrategies.put(4, new CompositeBusSort());
         sortStrategies.put(5, new EvenOddSortStrategy(new BusMileageSort(), Bus::getMileage));
-        sortStrategies.put(6, new EvenOddSortStrategy(new BusNumberSort(), Bus::getMileage));
     }
     /**
      * Точка входа в приложение для управления коллекцией автобусов.
@@ -227,7 +226,6 @@ public class Main {
         System.out.println("3. По пробегу");
         System.out.println("4. По всем полям (Number → Model → Mileage)");
         System.out.println("5. По пробегу (только четные позиции)");
-        System.out.println("6. По номеру (только четные позиции)");
 
         System.out.println("Ваш выбор: ");
         String tmp = sysInScanner.nextLine();
