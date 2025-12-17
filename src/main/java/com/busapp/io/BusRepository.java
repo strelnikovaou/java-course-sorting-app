@@ -110,24 +110,33 @@ public class BusRepository {
      */
     public void loadFromJson(File file) {
         if (file == null || !file.exists() || !file.isFile()) {
-            logger.error("Wrong file");
+            logger.error("Некорректный файл");
             return;
         }
         try {
-            busesCache.clear();
-
-            Bus[] loaded = objectMapper.readValue(file, Bus[].class);
-            for (Bus bus : loaded) {
-                BusValidator.ValidationResult vr = validatorChain.validate(bus);
-                if (vr.status() == BusValidator.ValidationStatus.SUCCESS) {
-                    busesCache.add(bus);
-                } else {
-                    logger.error("Ошибка валидации: {}", vr.message());
+            if(file.length() > 0){
+                Bus[] loaded = objectMapper.readValue(file, Bus[].class);
+                if(loaded != null && loaded.length > 0) {
+                    busesCache.clear();
+                    for (Bus bus : loaded) {
+                        BusValidator.ValidationResult vr = validatorChain.validate(bus);
+                        if (vr.status() == BusValidator.ValidationStatus.SUCCESS) {
+                            busesCache.add(bus);
+                        } else {
+                            logger.error("Ошибка валидации: {}", vr.message());
+                        }
+                    }
+                    this.loaded = true;
+                    logger.info("Успешно загружено {} автобусов из {}", busesCache.size(), file.getAbsolutePath());
+                }else{
+                    logger.info("Автобусы не найдены");
                 }
+            }else {
+                logger.info("Выбран пустой файл.");
             }
+
+
             this.busesFile = file;
-            this.loaded = true;
-            logger.info("Успешно загружено {} автобусов из {}", busesCache.size(), file.getAbsolutePath());
         } catch (IOException e) {
             logger.error("Ошибка чтения файла: {}", file.getAbsolutePath(), e);
         }

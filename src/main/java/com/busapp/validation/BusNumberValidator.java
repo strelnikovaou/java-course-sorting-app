@@ -11,7 +11,7 @@ public class BusNumberValidator extends BusValidator {
         if (bus.getNumber() == null || bus.getNumber().trim().isEmpty())
             return errorValidationResult("Номер автобуса не может быть пустым");
         if (!PATTERN.matcher(bus.getNumber()).matches()) {
-            return errorValidationResult("Номер должен соответствовать формату А123ВЕ");
+            return errorValidationResult("Номер должен соответствовать формату А123ВЕ. РАЗРЕШЁННЫЕ БУКВЫ: А, В, Е, К, М, Н, О, Р, С, Т, У, Х.");
         }
         return successValidationResult();
     }

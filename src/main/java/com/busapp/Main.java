@@ -157,9 +157,14 @@ public class Main {
         System.out.println("Сколько автобусов сгенерировать? :");
         String line = sysInScanner.nextLine();
         if (line.isBlank() || !isInteger(line)) {
+            logger.error("Некорректное значение: {} ", line);
             return;
         }
         int count = Integer.parseInt(line);
+        if (count<=0){
+            logger.error("Значение должно быть больше 0");
+            return;
+        }
 
         BusList generated = BusList.fromStream(
                 IntStream.range(0, count)
